@@ -1,0 +1,6 @@
+#tiles .square:hover {
+    cursor: grab;
+}
+#tiles .square:active {
+    cursor: grabbing;
+}
