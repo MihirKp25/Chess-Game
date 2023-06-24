@@ -11,6 +11,8 @@ import queen_b from "../assets/queen_b.png";
 import rook_b from "../assets/rook_b.png";
 import rook_w from "../assets/rook_w.png";
 
+
+//FEN string (Forsyth Edwards Notation string)
 const pieces = {
   p: pawn_b,
   P: pawn_w,
