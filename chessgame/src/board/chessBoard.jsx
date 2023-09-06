@@ -15,58 +15,26 @@ import rook_w from "../assets/rook_w.png";
 import { fen_to_state } from "../Fen/Fenconversion";
 // import { validmove } from "../rules/rules";
 import { referee } from "../rules/rules";
+import { createContext, useContext } from "react";
+import Context from "../context/context";
 
 function ChessBoard() {
   const chessboardref = useRef(null);
   const tiles = [];
   const Referee = new referee();
+  // const UserContext=createContext();
+  const func=useContext(Context);
+  const [turn, setTurn]=useState('w');
 
   //this will be the temporary representation of chess board
   const obj = { image: null, x: null, y: null, name: null, type: null };
 
-  const initialBoard = [];
-  initialBoard.push({ image: rook_b, x: 0, y: 0, name: "rook", type: "b" });
-  initialBoard.push({ image: knight_b, x: 0, y: 1, name: "knight", type: "b" });
-  initialBoard.push({ image: bishop_b, x: 0, y: 2, name: "bishop", type: "b" });
-  initialBoard.push({ image: queen_b, x: 0, y: 3, name: "queen", type: "b" });
-  initialBoard.push({ image: king_b, x: 0, y: 4, name: "king", type: "b" });
-  initialBoard.push({ image: bishop_b, x: 0, y: 5, name: "bishop", type: "b" });
-  initialBoard.push({ image: knight_b, x: 0, y: 6, name: "knight", type: "b" });
-  initialBoard.push({ image: rook_b, x: 0, y: 7, name: "rook", type: "b" });
-
-  initialBoard.push({ image: pawn_b, x: 1, y: 0, name: "pawn", type: "b" });
-  initialBoard.push({ image: pawn_b, x: 1, y: 1, name: "pawn", type: "b" });
-  initialBoard.push({ image: pawn_b, x: 1, y: 2, name: "pawn", type: "b" });
-  initialBoard.push({ image: pawn_b, x: 1, y: 3, name: "pawn", type: "b" });
-  initialBoard.push({ image: pawn_b, x: 1, y: 4, name: "pawn", type: "b" });
-  initialBoard.push({ image: pawn_b, x: 1, y: 5, name: "pawn", type: "b" });
-  initialBoard.push({ image: pawn_b, x: 1, y: 6, name: "pawn", type: "b" });
-  initialBoard.push({ image: pawn_b, x: 1, y: 7, name: "pawn", type: "b" });
-
-  initialBoard.push({ image: rook_w, x: 7, y: 0, name: "rook", type: "w" });
-  initialBoard.push({ image: knight_w, x: 7, y: 1, name: "knight", type: "w" });
-  initialBoard.push({ image: bishop_w, x: 7, y: 2, name: "bishop", type: "w" });
-  initialBoard.push({ image: queen_w, x: 7, y: 3, name: "queen", type: "w" });
-  initialBoard.push({ image: king_w, x: 7, y: 4, name: "king", type: "w" });
-  initialBoard.push({ image: bishop_w, x: 7, y: 5, name: "bishop", type: "w" });
-  initialBoard.push({ image: knight_w, x: 7, y: 6, name: "knight", type: "w" });
-  initialBoard.push({ image: rook_w, x: 7, y: 7, name: "rook", type: "w" });
-
-  initialBoard.push({ image: pawn_w, x: 6, y: 0, name: "pawn", type: "w" });
-  initialBoard.push({ image: pawn_w, x: 6, y: 1, name: "pawn", type: "w" });
-  initialBoard.push({ image: pawn_w, x: 6, y: 2, name: "pawn", type: "w" });
-  initialBoard.push({ image: pawn_w, x: 6, y: 3, name: "pawn", type: "w" });
-  initialBoard.push({ image: pawn_w, x: 6, y: 4, name: "pawn", type: "w" });
-  initialBoard.push({ image: pawn_w, x: 6, y: 5, name: "pawn", type: "w" });
-  initialBoard.push({ image: pawn_w, x: 6, y: 6, name: "pawn", type: "w" });
-  initialBoard.push({ image: pawn_w, x: 6, y: 7, name: "pawn", type: "w" });
-
-  const [pieces, setPieces] = useState([]);
+  
+  // const [pieces, setPieces] = useState([]);
 
   // setPieces(initialBoard)
-  useEffect(() => {
-    setPieces(initialBoard);
-  }, []);
+  // useEffect(() => {
+  // }, []);
 
   //vertical axis markings
   const change = ["a", "b", "c", "d", "e", "f", "g", "h"];
@@ -79,7 +47,7 @@ function ChessBoard() {
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
       let image = undefined;
-      pieces.map((p) => {
+      func.pieces.map((p) => {
         if (p.x === j && p.y === i) {
           image = p.image;
         }
@@ -165,13 +133,13 @@ function ChessBoard() {
       const x = Math.abs(Math.floor((e.clientY - chessBoard.offsetTop) / 70));
       // console.log(x, y);
       // console.log(gridX, gridY);
-      let maarnewala=pieces.find((p)=>{
+      let maarnewala=func.pieces.find((p)=>{
         if(p.x===gridX&&p.y==gridY)
         {
           return true;
         }
       })
-      let marnewala=pieces.find((p)=>{
+      let marnewala=func.pieces.find((p)=>{
         if(p.x===x&&p.y==y)
         {
           return true;
@@ -187,13 +155,13 @@ function ChessBoard() {
         y,
         maarnewala.name,
         maarnewala.type,
-        pieces
+        func.pieces, turn
       );
 
       if(check==1)
       {
 
-        let updatedPieces=pieces.reduce((res, p)=>{
+        let updatedPieces=func.pieces.reduce((res, p)=>{
           if(p.x==gridX&&p.y===gridY)
           {
             p.x = x;
@@ -203,11 +171,13 @@ function ChessBoard() {
           return res;
         }, []
         )
-        setPieces(updatedPieces);
+        func.setPieces(updatedPieces);
+
+        setTurn(turn === 'b' ? 'w' : 'b');
       }
       else if(check==-1)
       {
-        let updatedPieces=pieces.reduce((res, p)=>{
+        let updatedPieces=func.pieces.reduce((res, p)=>{
           if(p.x==gridX&&p.y===gridY)
           {
             p.x = x;
@@ -220,7 +190,8 @@ function ChessBoard() {
           }
           return res;
         }, [])
-        setPieces(updatedPieces);
+        func.setPieces(updatedPieces);
+        setTurn(turn === 'b' ? 'w' : 'b');
       }
       else{
           activeElement.target.style.position = "relative";
@@ -229,7 +200,7 @@ function ChessBoard() {
               activeElement.target.style.left = "0px";
       }
 
-      console.log(pieces);
+      console.log(func.pieces);
       setActiveelement(null);
     }
   }

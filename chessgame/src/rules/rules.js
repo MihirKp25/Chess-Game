@@ -1,28 +1,11 @@
+import { check_bishop } from "./bishop_rules";
+import { check_king } from "./king_rules";
+import { check_knight } from "./knight_rules";
+import { check_pawn } from "./pawn_rules";
+import { check_queen } from "./queen_rules";
+import { check_rook } from "./rook_rules";
+
 export class referee {
-  piecepresent(x, y, pieces) {
-    const present = pieces.find((p) => {
-      if (p.x === x && p.y === y) {
-        return true;
-      }
-    });
-    if (present) {
-      return true;
-    }
-    return false;
-  }
-
-  isEnemyPresent(x, y, pieces, type) {
-    const present = pieces.find((p) => {
-      if (p.x === x && p.y === y && p.type != type) {
-        return true;
-      }
-    });
-    if (present) {
-      return true;
-    }
-    return false;
-  }
-
   public;
   validmove(
     initial_pos_x,
@@ -31,44 +14,71 @@ export class referee {
     final_pos_y,
     name,
     type,
-    pieces
+    pieces,
+    turn
   ) {
-    if (name === "pawn") {
-      let t = type === "b" ? 1 : -1;
-      if ((initial_pos_x - final_pos_x) * t > 0) return 0;
-      if (initial_pos_y === final_pos_y) {
-        if (initial_pos_x === (t === 1 ? 1 : 6)) {
-          if (final_pos_x - initial_pos_x === (t === 1 ? 1 : -1)) {
-            if (!this.piecepresent(final_pos_x, final_pos_y, pieces)) return 1;
-            else return 0;
-          } else if (final_pos_x - initial_pos_x === (t === 1 ? 2 : -2)) {
-            if (
-              !this.piecepresent(final_pos_x, final_pos_y, pieces) &&
-              !this.piecepresent(final_pos_x - t, final_pos_y, pieces)
-            ) {
-              return 1;
-            } else return 0;
-          }
-        } else if (t * (final_pos_x - initial_pos_x) <= 1) {
-          if (!this.piecepresent(final_pos_x, final_pos_y, pieces)) return 1;
-          else return 0;
-        } else {
-          return 0;
-        }
-      } else {
-        if (
-          t * (final_pos_x - initial_pos_x) == 1 &&
-          (final_pos_y - initial_pos_y == 1 ||
-            final_pos_y - initial_pos_y == -1)
-        ) {
-          if (this.isEnemyPresent(final_pos_x, final_pos_y, pieces, type)) {
-            return -1;
-          }
-          return 0;
-        }
-        else return 0;
+    if (type === turn) {
+      if (name === "pawn") {
+        return check_pawn(
+          initial_pos_x,
+          initial_pos_y,
+          final_pos_x,
+          final_pos_y,
+          name,
+          type,
+          pieces
+        );
+      } else if (name === "rook") {
+        return check_rook(
+          initial_pos_x,
+          initial_pos_y,
+          final_pos_x,
+          final_pos_y,
+          name,
+          type,
+          pieces
+        );
+      } else if (name === "bishop") {
+        return check_bishop(
+          initial_pos_x,
+          initial_pos_y,
+          final_pos_x,
+          final_pos_y,
+          name,
+          type,
+          pieces
+        );
+      } else if (name === "knight") {
+        return check_knight(
+          initial_pos_x,
+          initial_pos_y,
+          final_pos_x,
+          final_pos_y,
+          name,
+          type,
+          pieces
+        );
+      } else if (name === "queen") {
+        return check_queen(
+          initial_pos_x,
+          initial_pos_y,
+          final_pos_x,
+          final_pos_y,
+          name,
+          type,
+          pieces
+        );
+      } else if (name === "king") {
+        return check_king(
+          initial_pos_x,
+          initial_pos_y,
+          final_pos_x,
+          final_pos_y,
+          name,
+          type,
+          pieces
+        );
       }
-    }
-    return 0;
+    } else return 0;
   }
 }
